@@ -44,5 +44,5 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass.set("fr.cyu.depinfo.activity.App")
+    mainClass.set("fr.cyu.depinfo.activity.Server")
 }
