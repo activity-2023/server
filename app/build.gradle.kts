@@ -23,6 +23,7 @@ dependencies {
     implementation(libs.picocli)
     implementation(libs.postgresql)
     implementation(libs.guava)
+    implementation(libs.bundles.jackson)
 }
 
 testing {

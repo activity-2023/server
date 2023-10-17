@@ -5,6 +5,7 @@ picocli = "4.7.5"
 hibernate = "6.3.1.Final"
 postgresql = "42.6.0"
 guava = "32.1.3-jre"
+jackson = "2.15.3"
 
 [libraries]
 log4j-api = {group = "org.apache.logging.log4j", name = "log4j-api", version.ref = "log4j"}
@@ -15,9 +16,12 @@ hibernate-core = {group = "org.hibernate.orm", name = "hibernate-core", version.
 hibernate-testing = {group = "org.hibernate.orm", name = "hibernate-testing", version.ref = "hibernate"}
 postgresql = {group = "org.postgresql", name = "postgresql", version.ref = "postgresql"}
 guava = {group = "com.google.guava", name = "guava", version.ref = "guava"}
+jackson-databind = {group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson"}
+jackson-yaml = {group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson"}
 
 [plugins]
 
 [bundles]
 log4j = ["log4j-api", "log4j-core"]
 hibernate = ["hibernate-core", "hibernate-testing"]
+jackson = ["jackson-databind", "jackson-yaml"]
