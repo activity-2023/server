@@ -18,7 +18,11 @@ repositories {
 
 dependencies {
     // This dependency is used by the application.
-    implementation("com.google.guava:guava:32.1.1-jre")
+    implementation(libs.bundles.log4j)
+    implementation(libs.tomlj)
+    implementation(libs.picocli)
+    implementation(libs.postgresql)
+    implementation(libs.guava)
 }
 
 testing {
