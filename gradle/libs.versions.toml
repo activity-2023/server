@@ -2,10 +2,12 @@
 log4j = "2.20.0"
 tomlj = "1.1.0"
 picocli = "4.7.5"
-hibernate = "6.3.1.Final"
+#hibernate = "6.3.1.Final"
+hibernate = "6.2.13.Final"
 postgresql = "42.6.0"
 guava = "32.1.3-jre"
 jackson = "2.15.3"
+hypersistence = "3.6.1"
 
 [libraries]
 log4j-api = {group = "org.apache.logging.log4j", name = "log4j-api", version.ref = "log4j"}
@@ -18,6 +20,7 @@ postgresql = {group = "org.postgresql", name = "postgresql", version.ref = "post
 guava = {group = "com.google.guava", name = "guava", version.ref = "guava"}
 jackson-databind = {group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson"}
 jackson-yaml = {group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson"}
+hypersistence = {group = "io.hypersistence", name = "hypersistence-utils-hibernate-62", version.ref = "hypersistence"}
 
 [plugins]
 
