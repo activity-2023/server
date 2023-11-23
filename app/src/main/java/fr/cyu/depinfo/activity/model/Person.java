@@ -27,6 +27,9 @@ public class Person {
     @Column(name = "person_birth_date")
     private Date birthDate;
 
+    @Column(name = "person_access_pin")
+    private Integer accessPin;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "subscribe",
@@ -139,6 +142,15 @@ public class Person {
 
     public Person setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+        return this;
+    }
+
+    public Integer getAccessPin() {
+        return accessPin;
+    }
+
+    public Person setAccessPin(Integer accessPin) {
+        this.accessPin = accessPin;
         return this;
     }
 
