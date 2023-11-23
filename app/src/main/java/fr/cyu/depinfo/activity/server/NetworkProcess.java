@@ -11,11 +11,13 @@ import org.hibernate.SessionFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.ProtocolException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class NetworkProcess implements Runnable {
     private static final Logger logger = LogManager.getLogger();
@@ -34,6 +36,16 @@ public class NetworkProcess implements Runnable {
 
     @Override
     public void run() {
+        AtomicInteger nbThreads = null;
+        try {
+            Field f = Server.class.getDeclaredField("nbThreads");
+            f.setAccessible(true);
+            nbThreads = (AtomicInteger) f.get(null);
+            nbThreads.incrementAndGet();
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            logger.error("An error occurred when trying to access the field nbThreads.", e);
+        }
+
         logger.debug("New client connected from {}:{}", socket.getInetAddress().getHostAddress(), socket.getPort());
 
         RoomDao roomDao = new RoomDao(sessionFactory);
@@ -153,6 +165,9 @@ public class NetworkProcess implements Runnable {
         } finally {
             try {
                 socket.close();
+                if (nbThreads != null) {
+                    nbThreads.decrementAndGet();
+                }
             } catch (IOException e) {
                 logger.error("Socket is currently used by another Thread and cannot be closed.", e);
             }
