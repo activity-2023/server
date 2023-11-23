@@ -14,6 +14,7 @@ public class BuildingLog {
     private Timestamp timestamp;
 
     @Column(name = "bl_status")
+    @Convert(converter = DoorStatusConverter.class)
     private DoorStatus doorStatus;
 
     public BuildingLogId getId() {

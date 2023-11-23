@@ -1,9 +1,6 @@
 package fr.cyu.depinfo.activity.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 
@@ -17,6 +14,7 @@ public class RoomLog {
     private Timestamp timestamp;
 
     @Column(name = "rl_status")
+    @Convert(converter = DoorStatusConverter.class)
     private DoorStatus doorStatus;
 
     public RoomLogId getId() {
