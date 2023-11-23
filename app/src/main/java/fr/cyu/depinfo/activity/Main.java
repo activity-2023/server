@@ -13,7 +13,7 @@ public class Main {
     private static final Logger logger = LogManager.getLogger();
 
     public static void main(String... args) throws UnknownHostException {
-        Server server = new Server("127.0.0.1", 15678);
+        Server server = new Server("127.0.0.1", 54321);
         server.start();
     }
 }
