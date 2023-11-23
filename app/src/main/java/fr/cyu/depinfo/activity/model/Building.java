@@ -26,7 +26,7 @@ public class Building {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = Room_.BUILDING, orphanRemoval = true)
     private Set<Room> rooms = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = BuildingLogId_.BUILDING, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.building", orphanRemoval = true)
     private Set<BuildingLog> buildingLogs = new HashSet<>();
 
     public Building addRoom(Room room) {

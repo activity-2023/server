@@ -35,7 +35,7 @@ public class Room {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = Event_.ROOM, orphanRemoval = true)
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = RoomLogId_.ROOM, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.room", orphanRemoval = true)
     private Set<RoomLog> roomLogs = new HashSet<>();
 
     public Room addEvent(Event event) {

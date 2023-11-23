@@ -46,10 +46,10 @@ public class Person {
     )
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = BuildingLogId_.PERSON, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.person", orphanRemoval = true)
     private Set<BuildingLog> buildingLogs = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = RoomLogId_.PERSON, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.person", orphanRemoval = true)
     private Set<RoomLog> roomLogs = new HashSet<>();
 
     public Person addActivity(Activity activity) {
