@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,8 +77,8 @@ public class NetworkProcess implements Runnable {
             }
 
             byte[] data = new byte[4];
-            Room room;
-            Building building;
+            Room room = null;
+            Building building = null;
             if (is.read(data, 0, 4) == 4) {
                 Integer roomBuildingId = Ints.fromByteArray(data);
                 if (protoCode == ProtocolCode.ROOMID) {
@@ -162,6 +163,22 @@ public class NetworkProcess implements Runnable {
             }
 
             os.write(ProtocolCode.DATAOK.getCode());
+
+            if (room == null) {
+                buildingLogDao.create(new BuildingLog()
+                        .setId(new BuildingLogId()
+                                .setBuilding(building)
+                                .setPerson(person))
+                        .setTimestamp(new Timestamp(System.currentTimeMillis()))
+                        .setDoorStatus(DoorStatus.OPENED));
+            } else {
+                roomLogDao.create(new RoomLog()
+                        .setId(new RoomLogId()
+                                .setRoom(room)
+                                .setPerson(person))
+                        .setTimestamp(new Timestamp(System.currentTimeMillis()))
+                        .setDoorStatus(DoorStatus.OPENED));
+            }
         } catch (IOException | BadDataException e) {
             logger.error(e);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
