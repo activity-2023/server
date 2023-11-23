@@ -1,4 +1,4 @@
-package fr.cyu.depinfo.activity.model;
+package fr.cyu.depinfo.activity.server;
 
 import java.io.Serial;
 
