@@ -1,13 +1,11 @@
 package fr.cyu.depinfo.activity.server;
 
-import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.common.primitives.Ints;
 import fr.cyu.depinfo.activity.dao.*;
 import fr.cyu.depinfo.activity.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.ArrayUtils;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NetworkProcess implements Runnable {
@@ -103,7 +100,7 @@ public class NetworkProcess implements Runnable {
             code = is.read();
             if (code != -1) {
                 protoCode = ProtocolCode.fromCode(code);
-                if (protoCode != ProtocolCode.USERID) {
+                if (protoCode != ProtocolCode.PERSONID) {
                     os.write(ProtocolCode.BADFORMAT.getCode());
                     throw new ProtocolException("Bad format");
                 }

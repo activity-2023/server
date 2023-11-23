@@ -9,7 +9,7 @@ public enum ProtocolCode {
     BADACCESS(0x22),
     ROOMID(0x30),
     BUILDINGID(0x31),
-    USERID(0x32),
+    PERSONID(0x32),
     NONCE(0x33),
     PASSWD(0x34);
 
@@ -29,7 +29,7 @@ public enum ProtocolCode {
             case 0x22 -> BADACCESS;
             case 0x30 -> ROOMID;
             case 0x31 -> BUILDINGID;
-            case 0x32 -> USERID;
+            case 0x32 -> PERSONID;
             case 0x33 -> NONCE;
             case 0x34 -> PASSWD;
             default -> null;
