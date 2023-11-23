@@ -5,16 +5,17 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
     private static final Logger logger = LogManager.getLogger();
 
-    private static AtomicInteger nbThreads = new AtomicInteger(0);
+    private static final AtomicInteger nbThreads = new AtomicInteger(0);
 
     private ThreadGroup g;
     private NetworkThreadFactory ntFactory;
