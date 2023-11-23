@@ -16,7 +16,7 @@ public class Server {
     private NetworkThreadFactory ntFactory;
     private ExecutorService service;
 
-    private int port = 15678;
+    private int port = 54321;
     private InetAddress addr = InetAddress.getByName("127.0.0.1");
 
     private SessionFactory sessionFactory;
