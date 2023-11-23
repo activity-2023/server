@@ -14,7 +14,7 @@ public class BuildingLog {
     private Timestamp timestamp;
 
     @Column(name = "bl_status")
-    private DoorStatus status;
+    private DoorStatus doorStatus;
 
     public BuildingLogId getId() {
         return id;
@@ -34,12 +34,12 @@ public class BuildingLog {
         return this;
     }
 
-    public DoorStatus getStatus() {
-        return status;
+    public DoorStatus getDoorStatus() {
+        return doorStatus;
     }
 
-    public BuildingLog setStatus(DoorStatus status) {
-        this.status = status;
+    public BuildingLog setDoorStatus(DoorStatus doorStatus) {
+        this.doorStatus = doorStatus;
         return this;
     }
 }
