@@ -23,9 +23,10 @@ dependencies {
     implementation(libs.picocli)
     implementation(libs.postgresql)
     implementation(libs.guava)
-    implementation(libs.hypersistence)
     implementation(libs.bundles.jackson)
     implementation(libs.bundles.hibernate)
+
+    annotationProcessor(libs.hibernate.jpamodelgen)
 }
 
 testing {
@@ -47,5 +48,5 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass.set("fr.cyu.depinfo.activity.Server")
+    mainClass.set("fr.cyu.depinfo.activity.server.Server")
 }

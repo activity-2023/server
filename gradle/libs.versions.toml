@@ -2,8 +2,7 @@
 log4j = "2.20.0"
 tomlj = "1.1.0"
 picocli = "4.7.5"
-#hibernate = "6.3.1.Final"
-hibernate = "6.2.13.Final"
+hibernate = "6.3.1.Final"
 postgresql = "42.6.0"
 guava = "32.1.3-jre"
 jackson = "2.15.3"
@@ -16,6 +15,7 @@ tomlj = {group = "org.tomlj", name = "tomlj", version.ref = "tomlj"}
 picocli = {group = "info.picocli", name = "picocli", version.ref = "picocli"}
 hibernate-core = {group = "org.hibernate.orm", name = "hibernate-core", version.ref = "hibernate"}
 hibernate-testing = {group = "org.hibernate.orm", name = "hibernate-testing", version.ref = "hibernate"}
+hibernate-jpamodelgen = {group = "org.hibernate.orm", name = "hibernate-jpamodelgen", version.ref = "hibernate"}
 postgresql = {group = "org.postgresql", name = "postgresql", version.ref = "postgresql"}
 guava = {group = "com.google.guava", name = "guava", version.ref = "guava"}
 jackson-databind = {group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson"}
