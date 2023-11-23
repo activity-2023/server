@@ -1,11 +1,13 @@
 package fr.cyu.depinfo.activity.server;
 
+import com.google.common.collect.Lists;
 import com.google.common.hash.Hashing;
 import com.google.common.primitives.Ints;
 import fr.cyu.depinfo.activity.dao.*;
 import fr.cyu.depinfo.activity.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.ArrayUtils;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
@@ -17,6 +19,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class NetworkProcess implements Runnable {
@@ -130,7 +134,6 @@ public class NetworkProcess implements Runnable {
             toSend[1] = ProtocolCode.NONCE.getCode().byteValue();
             String nonce = OneTimePassword.totp(person.getAccessPin().getBytes(), 1);
             byte[] nonceArray = nonce.getBytes();
-            logger.debug("Nonce size = {}", nonceArray.length);
             System.arraycopy(nonceArray, 0, toSend, 1, 6);
 
             os.write(toSend, 0, 8);
@@ -152,7 +155,8 @@ public class NetworkProcess implements Runnable {
             }
 
             byte[] serverHash = Hashing.sha256().hashString(person.getAccessPin().concat(nonce), StandardCharsets.UTF_8).asBytes();
-            if (data != serverHash) {
+
+            if (!Arrays.equals(data, serverHash)) {
                 os.write(ProtocolCode.BADDATA.getCode());
                 throw new BadDataException("Incorrect password.");
             }
