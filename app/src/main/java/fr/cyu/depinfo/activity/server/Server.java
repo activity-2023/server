@@ -17,14 +17,18 @@ public class Server {
 
     private static final AtomicInteger nbThreads = new AtomicInteger(0);
 
+    public static InetAddress SERVER_ADDRESS;
+    public static int SERVER_PORT;
+
     private ThreadGroup g;
     private NetworkThreadFactory ntFactory;
     private ExecutorService service;
 
-    private int port = 54321;
-    private InetAddress addr = InetAddress.getByName("127.0.0.1");
-
     private SessionFactory sessionFactory;
+
+    static {
+        setDefaultConfig();
+    }
 
     {
         g = new ThreadGroup("NetworkThreads");
@@ -34,22 +38,25 @@ public class Server {
         sessionFactory = HibernateUtil.getSessionFactory();
     }
 
-    public Server() throws UnknownHostException {}
-
-    public Server(String addr, int port) throws UnknownHostException {
-        this.addr = InetAddress.getByName(addr);
-        this.port = port;
-    }
-
-    public void start() {
-        try (ServerSocket serverSocket = new ServerSocket(this.port, 50, this.addr)) {
-            logger.info("Server listening on {}:{}", this.addr.getHostAddress(), this.port);
+    public void start() throws RuntimeException {
+        try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT, 50, SERVER_ADDRESS)) {
+            logger.info("Server listening on {}:{}", SERVER_ADDRESS, SERVER_PORT);
 
             while (true) {
                 this.service.submit(new NetworkProcess(serverSocket.accept(), sessionFactory));
             }
         } catch (IOException e) {
+            throw new RuntimeException("An error occurred when trying to start the server.", e);
+        }
+    }
+
+    public static void setDefaultConfig() throws RuntimeException {
+        try {
+            SERVER_ADDRESS = InetAddress.getByName("127.0.0.1");
+        } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
+
+        SERVER_PORT = 54321;
     }
 }
