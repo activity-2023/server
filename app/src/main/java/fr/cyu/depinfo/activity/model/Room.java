@@ -35,7 +35,7 @@ public class Room {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = Event_.ROOM, orphanRemoval = true)
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.room", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = RoomLog_.ROOM, orphanRemoval = true)
     private Set<RoomLog> roomLogs = new HashSet<>();
 
     public Room addEvent(Event event) {
@@ -52,13 +52,13 @@ public class Room {
 
     public Room addRoomLog(RoomLog roomLog) {
         this.roomLogs.add(roomLog);
-        roomLog.getId().setRoom(this);
+        roomLog.setRoom(this);
         return this;
     }
 
     public Room removeRoomLog(RoomLog roomLog) {
         this.roomLogs.remove(roomLog);
-        roomLog.getId().setRoom(null);
+        roomLog.setRoom(null);
         return this;
     }
 

@@ -7,8 +7,10 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "room_log")
 public class RoomLog {
-    @EmbeddedId
-    private RoomLogId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rl_id")
+    private Integer id;
 
     @Column(name = "rl_timestamp")
     private Timestamp timestamp;
@@ -17,11 +19,19 @@ public class RoomLog {
     @Convert(converter = DoorStatusConverter.class)
     private DoorStatus doorStatus;
 
-    public RoomLogId getId() {
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+
+    @ManyToOne
+    @JoinColumn(name = "person_id")
+    private Person person;
+
+    public Integer getId() {
         return id;
     }
 
-    public RoomLog setId(RoomLogId id) {
+    public RoomLog setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -41,6 +51,24 @@ public class RoomLog {
 
     public RoomLog setDoorStatus(DoorStatus doorStatus) {
         this.doorStatus = doorStatus;
+        return this;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public RoomLog setRoom(Room room) {
+        this.room = room;
+        return this;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public RoomLog setPerson(Person person) {
+        this.person = person;
         return this;
     }
 }

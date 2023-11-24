@@ -46,10 +46,10 @@ public class Person {
     )
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.person", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = BuildingLog_.PERSON, orphanRemoval = true)
     private Set<BuildingLog> buildingLogs = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.person", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = RoomLog_.PERSON, orphanRemoval = true)
     private Set<RoomLog> roomLogs = new HashSet<>();
 
     public Person addActivity(Activity activity) {
@@ -78,25 +78,25 @@ public class Person {
 
     public Person addBuildingLog(BuildingLog buildingLog) {
         this.buildingLogs.add(buildingLog);
-        buildingLog.getId().setPerson(this);
+        buildingLog.setPerson(this);
         return this;
     }
 
     public Person removeBuildingLog(BuildingLog buildingLog) {
         this.buildingLogs.remove(buildingLog);
-        buildingLog.getId().setPerson(null);
+        buildingLog.setPerson(null);
         return this;
     }
 
     public Person addRoomLog(RoomLog roomLog) {
         this.roomLogs.add(roomLog);
-        roomLog.getId().setPerson(this);
+        roomLog.setPerson(this);
         return this;
     }
 
     public Person removeRoomLog(RoomLog roomLog) {
         this.roomLogs.remove(roomLog);
-        roomLog.getId().setPerson(null);
+        roomLog.setPerson(null);
         return this;
     }
 
