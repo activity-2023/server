@@ -4,8 +4,8 @@ Configuration:
     property:
       - name: logDir
         value: log
-      - name: traceFilename
-        value: ${logDir}/application_trace.log
+      - name: debugFilename
+        value: ${logDir}/application_debug.log
       - name: errFilename
         value: ${logDir}/application_err.log
   appenders:
@@ -18,8 +18,8 @@ Configuration:
       PatternLayout:
         Pattern: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
     File:
-      - name: TraceFile
-        fileName: ${traceFilename}
+      - name: DebugFile
+        fileName: ${debugFilename}
         PatternLayout:
           Pattern: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
       - name: ErrFile
@@ -31,8 +31,8 @@ Configuration:
           Pattern: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
   Loggers:
     Root:
-      level: trace
+      level: debug
       AppenderRef:
         - ref: ConsoleOut
-        - ref: TraceFile
+        - ref: DebugFile
         - ref: ErrFile
