@@ -1,5 +1,5 @@
 Configuration:
-  status: warn
+  status: error
   properties:
     property:
       - name: logDir
@@ -12,6 +12,9 @@ Configuration:
     Console:
       name: ConsoleOut
       target: SYSTEM_OUT
+      Filters:
+        ThresholdFilter:
+          level: info
       PatternLayout:
         Pattern: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
     File:
