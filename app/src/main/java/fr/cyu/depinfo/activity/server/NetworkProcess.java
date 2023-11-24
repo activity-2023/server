@@ -27,13 +27,20 @@ public class NetworkProcess implements Runnable {
     private Socket socket;
     private SessionFactory sessionFactory;
 
-    public NetworkProcess(SessionFactory sessionFactory, Socket socket) {
+    public NetworkProcess(SessionFactory sessionFactory, Socket socket) throws RuntimeException {
         this(socket, sessionFactory);
     }
 
-    public NetworkProcess(Socket socket, SessionFactory sessionFactory) {
+    public NetworkProcess(Socket socket, SessionFactory sessionFactory) throws RuntimeException {
         this.socket = socket;
         this.sessionFactory = sessionFactory;
+
+        try {
+            this.socket.setSoTimeout(5000);
+        } catch (SocketException e) {
+            logger.error("An error occurred when trying to add a timeout.");
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
