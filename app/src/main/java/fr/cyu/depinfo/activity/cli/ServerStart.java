@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@CommandLine.Command(name = "ANS (Activity Net Server)", description = "Start the network server.", mixinStandardHelpOptions = true)
+@CommandLine.Command(name = "ANS (Activity Net Server)", description = "Start the network server.", version = "1.0.0", mixinStandardHelpOptions = true)
 public class ServerStart implements Runnable {
     private static final Logger logger = LogManager.getLogger();
 
