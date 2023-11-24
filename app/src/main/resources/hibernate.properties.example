@@ -1,0 +1,9 @@
+# Database connection settings
+hibernate.connection.url=jdbc:postgresql://server_url:server_port/database
+hibernate.connection.username=database_user
+hibernate.connection.password=database_password
+
+# Echo all executed SQL to console
+#hibernate.show_sql=true # Uncomment to print generated SQL in the console
+#hibernate.format_sql=true # Uncomment to format generated SQL
+#hibernate.highlight_sql=true # Uncomment to highlight generated SQL
