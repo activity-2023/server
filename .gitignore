@@ -1,3 +1,7 @@
+### Application specific
+# Config file
+**/dist/config.toml
+
 ### Hibernate
 # Configuration
 hibernate.properties
