@@ -55,7 +55,7 @@ public class NetworkProcess implements Runnable {
             logger.error("An error occurred when trying to access the field nbThreads.", e);
         }
 
-        logger.debug("New client connected from {}:{}", socket.getInetAddress().getHostAddress(), socket.getPort());
+        logger.info("New client connected from {}:{}", socket.getInetAddress().getHostAddress(), socket.getPort());
 
         RoomDao roomDao = new RoomDao(sessionFactory);
         BuildingDao buildingDao = new BuildingDao(sessionFactory);
