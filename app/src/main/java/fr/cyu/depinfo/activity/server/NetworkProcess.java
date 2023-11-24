@@ -183,6 +183,8 @@ public class NetworkProcess implements Runnable {
                         .setTimestamp(new Timestamp(System.currentTimeMillis()))
                         .setDoorStatus(DoorStatus.OPENED));
             }
+        } catch (SocketTimeoutException e) {
+            logger.info("The client is taking too long to respond.");
         } catch (IOException | BadDataException e) {
             logger.error(e);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
