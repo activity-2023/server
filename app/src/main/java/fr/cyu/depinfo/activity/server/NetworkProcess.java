@@ -6,7 +6,9 @@ import fr.cyu.depinfo.activity.dao.*;
 import fr.cyu.depinfo.activity.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +16,14 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.ProtocolException;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -130,10 +136,13 @@ public class NetworkProcess implements Runnable {
             }
 
             byte[] toSend = new byte[8];
-            if (staff != null) {
+            if (staff != null || building != null) {
                 toSend[0] = ProtocolCode.ACCESSOK.getCode().byteValue();
             } else {
-                logger.info("TODO");
+                if (!hasAccess(person, room)) {
+                    os.write(ProtocolCode.BADACCESS.getCode());
+                    throw new BadDataException("This person cannot access this room now.");
+                }
             }
 
             toSend[1] = ProtocolCode.NONCE.getCode().byteValue();
@@ -199,5 +208,22 @@ public class NetworkProcess implements Runnable {
                 logger.error("Socket is currently used by another Thread and cannot be closed.", e);
             }
         }
+    }
+
+    private boolean hasAccess(Person p, Room r) {
+        for (Event e : p.getEvents()) {
+            if (LocalDate.now().equals(e.getDate().toLocalDate())) {
+                LocalTime now = LocalTime.now();
+                LocalTime eventStart = e.getStartTime().toLocalTime().minusMinutes(30);
+                LocalTime eventEnd = e.getStartTime().toLocalTime()
+                        .plusHours(e.getDuration().toLocalTime().getHour())
+                        .plusMinutes(e.getDuration().toLocalTime().getMinute())
+                        .plusMinutes(30);
+                if (now.isBefore(eventStart) || now.isAfter(eventEnd)) {
+                    return e.getRoom().equals(r);
+                }
+            }
+        }
+        return false;
     }
 }
