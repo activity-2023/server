@@ -33,6 +33,13 @@ public class NetworkProcess implements Runnable {
     private Socket socket;
     private SessionFactory sessionFactory;
 
+    RoomDao roomDao;
+    BuildingDao buildingDao;
+    PersonDao personDao;
+    StaffDao staffDao;
+    BuildingLogDao buildingLogDao;
+    RoomLogDao roomLogDao;
+
     public NetworkProcess(SessionFactory sessionFactory, Socket socket) throws RuntimeException {
         this(socket, sessionFactory);
     }
@@ -42,11 +49,18 @@ public class NetworkProcess implements Runnable {
         this.sessionFactory = sessionFactory;
 
         try {
-            this.socket.setSoTimeout(5000);
+            this.socket.setSoTimeout(30000);
         } catch (SocketException e) {
             logger.error("An error occurred when trying to add a timeout.");
             throw new RuntimeException(e);
         }
+
+        roomDao = new RoomDao(sessionFactory);
+        buildingDao = new BuildingDao(sessionFactory);
+        personDao = new PersonDao(sessionFactory);
+        staffDao = new StaffDao(sessionFactory);
+        buildingLogDao = new BuildingLogDao(sessionFactory);
+        roomLogDao = new RoomLogDao(sessionFactory);
     }
 
     @Override
@@ -63,13 +77,6 @@ public class NetworkProcess implements Runnable {
 
         logger.info("New client connected from {}:{}", socket.getInetAddress().getHostAddress(), socket.getPort());
 
-        RoomDao roomDao = new RoomDao(sessionFactory);
-        BuildingDao buildingDao = new BuildingDao(sessionFactory);
-        PersonDao personDao = new PersonDao(sessionFactory);
-        StaffDao staffDao = new StaffDao(sessionFactory);
-        BuildingLogDao buildingLogDao = new BuildingLogDao(sessionFactory);
-        RoomLogDao roomLogDao = new RoomLogDao(sessionFactory);
-
         try {
             InputStream is = socket.getInputStream();
             OutputStream os = socket.getOutputStream();
@@ -78,6 +85,7 @@ public class NetworkProcess implements Runnable {
             ProtocolCode protoCode;
             if (code != -1) {
                 protoCode = ProtocolCode.fromCode(code);
+                logger.fatal(protoCode);
                 if (protoCode != ProtocolCode.ROOMID && protoCode != ProtocolCode.BUILDINGID) {
                     os.write(ProtocolCode.BADFORMAT.getCode());
                     throw new ProtocolException("Bad format");
@@ -97,12 +105,14 @@ public class NetworkProcess implements Runnable {
                         os.write(ProtocolCode.BADDATA.getCode());
                         throw new BadDataException("The room does not exist.");
                     }
+                    logger.fatal("IN ROOM SET");
                 } else {
                     building = buildingDao.read(roomBuildingId);
                     if (building == null) {
                         os.write(ProtocolCode.BADDATA.getCode());
                         throw new BadDataException("The building does not exist.");
                     }
+                    logger.fatal("IN BUILDING SET");
                 }
             } else {
                 throw new ProtocolException("Bad protocol!");
@@ -141,14 +151,20 @@ public class NetworkProcess implements Runnable {
             } else {
                 if (!hasAccess(person, room)) {
                     os.write(ProtocolCode.BADACCESS.getCode());
+
+                    addLog(person, room, DoorStatus.CLOSED);
+                    addLog(person, building, DoorStatus.CLOSED);
+
                     throw new BadDataException("This person cannot access this room now.");
+                } else {
+                    toSend[0] = ProtocolCode.ACCESSOK.getCode().byteValue();
                 }
             }
 
             toSend[1] = ProtocolCode.NONCE.getCode().byteValue();
             String nonce = OneTimePassword.totp(person.getAccessPin().getBytes(), 1);
             byte[] nonceArray = nonce.getBytes();
-            System.arraycopy(nonceArray, 0, toSend, 1, 6);
+            System.arraycopy(nonceArray, 0, toSend, 2, 6);
 
             os.write(toSend, 0, 8);
 
@@ -157,14 +173,22 @@ public class NetworkProcess implements Runnable {
                 protoCode = ProtocolCode.fromCode(code);
                 if (protoCode != ProtocolCode.PASSWD) {
                     os.write(ProtocolCode.BADFORMAT.getCode());
+
+                    addLog(person, room, DoorStatus.CLOSED);
+                    addLog(person, building, DoorStatus.CLOSED);
+
                     throw new ProtocolException("Bad format");
                 }
             } else {
+                addLog(person, room, DoorStatus.CLOSED);
+                addLog(person, building, DoorStatus.CLOSED);
                 throw new ProtocolException("Bad protocol!");
             }
 
             data = new byte[32];
             if (is.read(data, 0, 32) != 32) {
+                addLog(person, room, DoorStatus.CLOSED);
+                addLog(person, building, DoorStatus.CLOSED);
                 throw new ProtocolException("Bad protocol!");
             }
 
@@ -172,26 +196,19 @@ public class NetworkProcess implements Runnable {
 
             if (!Arrays.equals(data, serverHash)) {
                 os.write(ProtocolCode.BADDATA.getCode());
+
+                addLog(person, room, DoorStatus.CLOSED);
+                addLog(person, building, DoorStatus.CLOSED);
+
                 throw new BadDataException("Incorrect password.");
             }
 
             os.write(ProtocolCode.DATAOK.getCode());
 
-            if (room == null) {
-                buildingLogDao.create(new BuildingLog()
-                        .setId(new BuildingLogId()
-                                .setBuilding(building)
-                                .setPerson(person))
-                        .setTimestamp(new Timestamp(System.currentTimeMillis()))
-                        .setDoorStatus(DoorStatus.OPENED));
-            } else {
-                roomLogDao.create(new RoomLog()
-                        .setId(new RoomLogId()
-                                .setRoom(room)
-                                .setPerson(person))
-                        .setTimestamp(new Timestamp(System.currentTimeMillis()))
-                        .setDoorStatus(DoorStatus.OPENED));
-            }
+            logger.error("Building = {}, Room = {}", building, room);
+
+            addLog(person, room, DoorStatus.OPENED);
+            addLog(person, building, DoorStatus.OPENED);
         } catch (SocketTimeoutException e) {
             logger.info("The client is taking too long to respond.");
         } catch (IOException | BadDataException e) {
@@ -225,5 +242,25 @@ public class NetworkProcess implements Runnable {
             }
         }
         return false;
+    }
+
+    private void addLog(Person p, Room r, DoorStatus doorStatus) {
+        if (r != null) {
+            roomLogDao.create(new RoomLog()
+                    .setTimestamp(new Timestamp(System.currentTimeMillis()))
+                    .setDoorStatus(doorStatus)
+                    .setPerson(p)
+                    .setRoom(r));
+        }
+    }
+
+    private void addLog(Person p, Building b, DoorStatus doorStatus) {
+        if (b != null) {
+            buildingLogDao.create(new BuildingLog()
+                    .setTimestamp(new Timestamp(System.currentTimeMillis()))
+                    .setDoorStatus(doorStatus)
+                    .setPerson(p)
+                    .setBuilding(b));
+        }
     }
 }
