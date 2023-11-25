@@ -3,6 +3,7 @@ package fr.cyu.depinfo.activity.model;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -141,5 +142,18 @@ public class Room {
     public Room setRoomLogs(Set<RoomLog> roomLogs) {
         this.roomLogs = roomLogs;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return Objects.equals(id, room.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
