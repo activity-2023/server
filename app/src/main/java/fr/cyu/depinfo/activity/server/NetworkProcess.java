@@ -236,7 +236,7 @@ public class NetworkProcess implements Runnable {
                         .plusHours(e.getDuration().toLocalTime().getHour())
                         .plusMinutes(e.getDuration().toLocalTime().getMinute())
                         .plusMinutes(30);
-                if (now.isBefore(eventStart) || now.isAfter(eventEnd)) {
+                if (!now.isBefore(eventStart) && !now.isAfter(eventEnd)) {
                     return e.getRoom().equals(r);
                 }
             }
