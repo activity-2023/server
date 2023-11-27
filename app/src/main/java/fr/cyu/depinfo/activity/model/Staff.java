@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "staff_id")
-public class Staff extends User {
+public class Staff extends UserAccount {
     @Column(name = "staff_email")
     private String email;
 

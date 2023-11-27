@@ -6,9 +6,9 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "user_account")
 @PrimaryKeyJoinColumn(name = "user_id")
-public class User extends Person {
+public class UserAccount extends Person {
     @Column(name = "user_login")
     private String login;
 
@@ -22,7 +22,7 @@ public class User extends Person {
         return login;
     }
 
-    public User setLogin(String login) {
+    public UserAccount setLogin(String login) {
         this.login = login;
         return this;
     }
@@ -31,7 +31,7 @@ public class User extends Person {
         return passwordHash;
     }
 
-    public User setPasswordHash(String passwordHash) {
+    public UserAccount setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
         return this;
     }
@@ -40,7 +40,7 @@ public class User extends Person {
         return passwordSalt;
     }
 
-    public User setPasswordSalt(String passwordSalt) {
+    public UserAccount setPasswordSalt(String passwordSalt) {
         this.passwordSalt = passwordSalt;
         return this;
     }

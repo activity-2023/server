@@ -22,7 +22,7 @@ public class HibernateUtil {
                     )
                             .build())
                     .addAnnotatedClass(Person.class)
-                    .addAnnotatedClass(User.class)
+                    .addAnnotatedClass(UserAccount.class)
                     .addAnnotatedClass(Parent.class)
                     .addAnnotatedClass(Child.class)
                     .addAnnotatedClass(Staff.class)

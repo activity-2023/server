@@ -1,14 +1,13 @@
 package fr.cyu.depinfo.activity.model;
 
 import jakarta.persistence.*;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "parent_id")
-public class Parent extends User {
+public class Parent extends UserAccount {
     @Column(name = "parent_email")
     private String email;
 
