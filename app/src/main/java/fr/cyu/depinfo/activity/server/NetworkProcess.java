@@ -49,7 +49,7 @@ public class NetworkProcess implements Runnable {
         this.sessionFactory = sessionFactory;
 
         try {
-            this.socket.setSoTimeout(30000);
+            this.socket.setSoTimeout(5000);
         } catch (SocketException e) {
             logger.error("An error occurred when trying to add a timeout.");
             throw new RuntimeException(e);
@@ -85,7 +85,6 @@ public class NetworkProcess implements Runnable {
             ProtocolCode protoCode;
             if (code != -1) {
                 protoCode = ProtocolCode.fromCode(code);
-                logger.fatal(protoCode);
                 if (protoCode != ProtocolCode.ROOMID && protoCode != ProtocolCode.BUILDINGID) {
                     os.write(ProtocolCode.BADFORMAT.getCode());
                     throw new ProtocolException("Bad format");
@@ -105,14 +104,12 @@ public class NetworkProcess implements Runnable {
                         os.write(ProtocolCode.BADDATA.getCode());
                         throw new BadDataException("The room does not exist.");
                     }
-                    logger.fatal("IN ROOM SET");
                 } else {
                     building = buildingDao.read(roomBuildingId);
                     if (building == null) {
                         os.write(ProtocolCode.BADDATA.getCode());
                         throw new BadDataException("The building does not exist.");
                     }
-                    logger.fatal("IN BUILDING SET");
                 }
             } else {
                 throw new ProtocolException("Bad protocol!");
@@ -205,14 +202,12 @@ public class NetworkProcess implements Runnable {
 
             os.write(ProtocolCode.DATAOK.getCode());
 
-            logger.error("Building = {}, Room = {}", building, room);
-
             addLog(person, room, DoorStatus.OPENED);
             addLog(person, building, DoorStatus.OPENED);
         } catch (SocketTimeoutException e) {
             logger.info("The client is taking too long to respond.");
         } catch (IOException | BadDataException e) {
-            logger.error(e);
+            logger.error("Incorrect data received.");
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             logger.error("An error occurred when trying to generate the nonce.", e);
         } finally {
