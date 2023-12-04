@@ -207,7 +207,7 @@ public class NetworkProcess implements Runnable {
         } catch (SocketTimeoutException e) {
             logger.info("The client is taking too long to respond.");
         } catch (IOException | BadDataException e) {
-            logger.error("Incorrect data received.");
+            logger.error("Incorrect data received from {}.", socket.getInetAddress());
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             logger.error("An error occurred when trying to generate the nonce.", e);
         } finally {
